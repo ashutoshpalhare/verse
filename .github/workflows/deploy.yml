@@ -36,9 +36,9 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
+  uses: actions/upload-pages-artifact@v3
+  with:
+    path: ./.output/public
 
   deploy:
     environment:
