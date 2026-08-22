@@ -35,11 +35,17 @@ jobs:
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
+      - name: Inspect build output
+        run: |
+          echo "=== Root directory ==="
+          ls -la
+          echo "=== .output directory ==="
+          find .output -maxdepth 3 -type f | sort | head -200
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./.output/public
-
   deploy:
     environment:
       name: github-pages
