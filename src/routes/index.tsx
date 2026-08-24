@@ -13,15 +13,64 @@ import { Button } from "../components/ui/button";
 
 export const Route = createFileRoute("/")({
   component: Index,
-  head: () => ({
-    meta: [
-      { title: "AP VERSE — AP's Visual Universe" },
-      { name: "description", content: "A private digital universe containing AP's portraits and selfies." },
-      { property: "og:title", content: "AP VERSE" },
-      { property: "og:description", content: "AP's Visual Universe - Personal Visual Archive." },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+ head: () => ({
+  meta: [
+    {
+      title: "AP VERSE — AP's Visual Universe",
+    },
+    {
+      name: "description",
+      content:
+        "AP VERSE — a cinematic personal portrait gallery and visual universe of Ashutosh Palhare.",
+    },
+    {
+      name: "author",
+      content: "Ashutosh Palhare",
+    },
+    {
+      name: "robots",
+      content: "index, follow",
+    },
+
+    // Open Graph
+    {
+      property: "og:title",
+      content: "AP VERSE — AP's Visual Universe",
+    },
+    {
+      property: "og:description",
+      content:
+        "A cinematic personal portrait gallery and visual universe of Ashutosh Palhare.",
+    },
+    {
+      property: "og:type",
+      content: "website",
+    },
+    {
+      property: "og:url",
+      content: "https://ashutoshpalhare.github.io/verse/",
+    },
+    {
+      property: "og:site_name",
+      content: "AP VERSE",
+    },
+
+    // Twitter / X
+    {
+      name: "twitter:card",
+      content: "summary_large_image",
+    },
+    {
+      name: "twitter:title",
+      content: "AP VERSE — AP's Visual Universe",
+    },
+    {
+      name: "twitter:description",
+      content:
+        "A cinematic personal portrait gallery and visual universe by Ashutosh Palhare.",
+    },
+  ],
+}),
 });
 
 function Index() {
