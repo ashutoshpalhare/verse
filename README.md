@@ -8,9 +8,7 @@ A premium, cinematic personal portrait gallery — a private digital universe bu
 
 ## Live Demo
 
-🌐 **GitHub Pages:** `https://<your-username>.github.io/verse/`
-
-*(Replace `<your-username>` with your GitHub username after deployment.)*
+🌐 **GitHub Pages:** `https://ashutoshpalhare.github.io/verse/`
 
 ---
 
@@ -54,8 +52,8 @@ A premium, cinematic personal portrait gallery — a private digital universe bu
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/ashutoshpalhare/ap-verse.git
-cd ap-verse
+git clone https://github.com/ashutoshpalhare/verse.git
+cd verse
 ```
 
 ### 2. Install dependencies
@@ -133,7 +131,7 @@ This outputs a fully static site to `dist-pages/` with `index.html` at the root.
 The app is configured with `base: "/verse/"`, so it will be available at:
 
 ```
-https://<your-username>.github.io/verse/
+https://ashutoshpalhare.github.io/verse/
 ```
 
 ---
@@ -220,7 +218,7 @@ ap-verse/
 **Ashutosh Palhare**
 
 - GitHub: [@ashutoshpalhare](https://github.com/ashutoshpalhare)
-- Project: [AP VERSE](https://github.com/ashutoshpalhare/ap-verse)
+- Project: [AP VERSE](https://github.com/ashutoshpalhare/verse)
 
 ---
 
