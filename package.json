@@ -10,8 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "build:pages": "vite build --config vite.pages.config.ts"
-  },
+    "build:pages": "bun run generate:images && vite build --config vite.pages.config.ts",
+    "generate:images": "bun scripts/generate-image-manifest.mjs"  },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@icons-pack/react-simple-icons": "^13.13.0",
