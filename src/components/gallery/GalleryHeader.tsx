@@ -10,6 +10,11 @@ import { motion } from "framer-motion";
 export function GalleryHeader() {
   const { photos, viewMode, setViewMode, setSearchQuery } = useGalleryStore();
   const [isSearching, setIsSearching] = useState(false);
+
+  const toggleSearch = () => {
+    if (isSearching) setSearchQuery("");
+    setIsSearching((open) => !open);
+  };
   
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-black/50 py-6 backdrop-blur-xl">
@@ -42,11 +47,11 @@ export function GalleryHeader() {
                 placeholder="SEARCH UNIVERSE..."
                 className="h-10 w-40 md:w-64 bg-white/5 border-white/10 rounded-full px-5 text-[10px] font-bold tracking-widest uppercase"
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onBlur={() => !isSearching && setIsSearching(false)}
               />
             )}
             <Button 
-              onClick={() => setIsSearching(!isSearching)}
+              onClick={toggleSearch}
+              aria-label={isSearching ? "Close search" : "Open search"}
               variant="ghost" 
               size="icon" 
               className={cn(
