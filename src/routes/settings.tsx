@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import type { ChangeEvent, ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Smartphone,
@@ -33,6 +34,7 @@ import {
 import { useThemeStore, ThemeType } from "../lib/store/theme-store";
 import { usePreferencesStore } from "../lib/store/preferences-store";
 import { useGalleryStore, ArchiveImportPayload } from "../lib/store/gallery-store";
+import { useGalleryPhotos } from "../hooks/use-gallery-photos";
 import { cn } from "../lib/utils";
 import { motion } from "framer-motion";
 
@@ -86,6 +88,7 @@ function validateArchivePayload(value: unknown): ArchiveImportPayload {
 }
 
 function Settings() {
+  useGalleryPhotos();
   const { theme, setTheme, resetTheme } = useThemeStore();
   const {
     fluidAnimations,
@@ -133,11 +136,11 @@ function Settings() {
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     toast.success("Archive export downloaded.");
   };
 
-  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImport = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
@@ -291,7 +294,7 @@ function Settings() {
             <Metric icon={<ImageIcon className="h-4 w-4" />} label="Portraits" value={photos.length.toLocaleString()} />
             <Metric icon={<Heart className="h-4 w-4" />} label="Favorites" value={favoriteCount.toLocaleString()} />
             <Metric icon={<FileJson className="h-4 w-4" />} label="Metadata" value={metadataCount.toLocaleString()} />
-            <Metric icon={<Database className="h-4 w-4" />} label="Local data" value={formatBytes(archiveSize)} />
+            <Metric icon={<Database className="h-4 w-4" />} label="Backup size" value={formatBytes(archiveSize)} />
           </div>
           <p className="text-xs leading-relaxed text-white/35">
             Favorites and edited photo details are stored in this browser only. There is no cloud
@@ -396,7 +399,7 @@ function Settings() {
   );
 }
 
-function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function Metric({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-white/5 bg-white/5 p-4">
       <div className="flex items-center gap-2 text-white/35">{icon}<span className="text-[9px] font-bold uppercase tracking-widest">{label}</span></div>
