@@ -46,7 +46,8 @@ function legacyId(filename) {
   return Buffer.from(filename, "utf8").toString("base64").replace(/=+$/g, "");
 }
 
-const files = collectImageFiles(imagesDir).sort((a, b) =>
+const sourceExists = fs.existsSync(imagesDir) && fs.statSync(imagesDir).isDirectory();
+const files = collectImageFiles(sourceExists ? imagesDir : path.dirname(imagesDir)).filter((file) => sourceExists || false).sort((a, b) =>
   naturalCompare(a.filename, b.filename),
 );
 const byContent = new Map();
@@ -84,7 +85,7 @@ const images = [...byContent.values()].sort((a, b) =>
 fs.mkdirSync(outputDir, { recursive: true });
 fs.writeFileSync(
   outputFile,
-  JSON.stringify({ version: 2, images }, null, 2),
+  JSON.stringify({ version: 2, sourceExists, images }, null, 2),
   "utf8",
 );
 
