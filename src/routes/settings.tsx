@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import type { ChangeEvent, ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -100,7 +100,6 @@ function Settings() {
   const { photos, favorites, metadataOverrides, importArchiveData, resetArchiveData } =
     useGalleryStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [scaleValue, setScaleValue] = useState([interfaceScale]);
 
   const favoriteCount = useMemo(
     () => favorites.filter((id) => photos.some((photo) => photo.id === id)).length,
@@ -160,7 +159,6 @@ function Settings() {
   const handleResetSettings = () => {
     resetTheme();
     resetPreferences();
-    setScaleValue([100]);
     toast.success("Appearance settings restored to defaults.");
   };
 
@@ -267,12 +265,11 @@ function Settings() {
               <span className="text-xs tabular-nums text-white/50">{interfaceScale}%</span>
             </div>
             <Slider
-              value={scaleValue}
+              value={[interfaceScale]}
               min={80}
               max={120}
               step={5}
-              onValueChange={setScaleValue}
-              onValueCommit={(value) => setInterfaceScale(value[0] ?? 100)}
+              onValueChange={(value) => setInterfaceScale(value[0] ?? 100)}
               aria-label="Interface scale"
             />
             <div className="flex justify-between text-[10px] text-white/30">
