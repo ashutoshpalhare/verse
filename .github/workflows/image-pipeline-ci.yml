@@ -9,6 +9,8 @@ on:
       - "src/lib/store/gallery-store.ts"
       - "src/types/photo.ts"
       - "src/hooks/use-gallery-photos.ts"
+      - "src/components/gallery/PhotoCard.tsx"
+      - "src/components/gallery/PhotoViewer.tsx"
       - "package.json"
       - "bun.lock"
       - "vite.pages.config.ts"
