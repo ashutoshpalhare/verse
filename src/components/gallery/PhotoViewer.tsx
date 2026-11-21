@@ -38,14 +38,14 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
   const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0 }));
   
   const bind = useGesture({
-    onDrag: ({ active, movement: [mx, my], direction: [dx, dy], velocity: [vx, vy], cancel }) => {
+    onDrag: ({ active, movement: [mx, my] }) => {
       if (active) {
         api.start({ x: mx, y: my, immediate: true });
       } else {
-        if (Math.abs(mx) > 100 && vx > 0.5) {
+        if (Math.abs(mx) > 100) {
           mx > 0 ? onPrev() : onNext();
           api.start({ x: 0, y: 0, immediate: false });
-        } else if (my > 150 && vy > 0.5) {
+        } else if (my > 150) {
           onClose();
         } else {
           api.start({ x: 0, y: 0, immediate: false });
@@ -56,10 +56,27 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") onNext();
-      if (e.key === "ArrowLeft") onPrev();
-      if (e.key === "f") photo && toggleFavorite(photo.id);
+      const target = e.target as HTMLElement | null;
+      const isEditable =
+        !!target &&
+        (target.isContentEditable ||
+          ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+
+      // Never hijack typing, text selection, or browser shortcuts.
+      if (isEditable || e.altKey || e.ctrlKey || e.metaKey || e.repeat) return;
+
+      if (e.key === "Escape") {
+        onClose();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        onNext();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        onPrev();
+      } else if (e.key.toLowerCase() === "f" && photo) {
+        e.preventDefault();
+        toggleFavorite(photo.id);
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
