@@ -40,7 +40,7 @@ try {
   assert.equal(manifest.images.length, 4, "supported formats should be found and identical content deduplicated");
   assert.deepEqual(
     manifest.images.map((image) => image.filename),
-    ["duplicate.png", "Portrait 4.webp", "Portrait 10.JPG", "nested/Portrait 3.avif"],
+    ["duplicate.png", "nested/Portrait 3.avif", "Portrait 4.webp", "Portrait 10.JPG"],
     "paths should be sorted naturally and nested images included",
   );
   assert.ok(manifest.images.every((image) => /^[a-f0-9]{64}$/.test(image.id)));
