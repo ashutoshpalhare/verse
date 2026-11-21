@@ -162,3 +162,15 @@
     color: var(--color-foreground);
   }
 }
+
+
+/* Appearance preferences applied by ThemeProvider. */
+html[data-fluid-animations="false"] *,
+html[data-fluid-animations="false"] *::before,
+html[data-fluid-animations="false"] *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  caret-color: auto;
+}
