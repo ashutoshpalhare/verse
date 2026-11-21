@@ -47,9 +47,9 @@ function legacyId(filename) {
 }
 
 const sourceExists = fs.existsSync(imagesDir) && fs.statSync(imagesDir).isDirectory();
-const files = collectImageFiles(sourceExists ? imagesDir : path.dirname(imagesDir)).filter((file) => sourceExists || false).sort((a, b) =>
-  naturalCompare(a.filename, b.filename),
-);
+const files = sourceExists
+  ? collectImageFiles(imagesDir).sort((a, b) => naturalCompare(a.filename, b.filename))
+  : [];
 const byContent = new Map();
 let unreadableCount = 0;
 
