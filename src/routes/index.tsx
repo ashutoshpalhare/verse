@@ -97,6 +97,10 @@ function Index() {
     ? processedPhotos.findIndex((photo) => photo.id === selectedPhotoId)
     : -1;
 
+  useEffect(() => {
+    if (selectedPhotoId && selectedPhotoIndex < 0) setSelectedPhotoId(null);
+  }, [selectedPhotoId, selectedPhotoIndex]);
+
   const handleOpenViewer = (index: number) => {
     const photo = processedPhotos[index];
     if (photo) setSelectedPhotoId(photo.id);
