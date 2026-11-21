@@ -1,0 +1,30 @@
+name: Image Pipeline CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/**"
+      - "src/lib/image-discovery.ts"
+      - "src/lib/store/gallery-store.ts"
+      - "src/types/photo.ts"
+      - "src/hooks/use-gallery-photos.ts"
+      - "package.json"
+      - "bun.lock"
+      - "vite.pages.config.ts"
+      - ".github/workflows/image-pipeline-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify-image-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - name: Run image manifest regression tests
+        run: bun run test:images
+      - name: Build GitHub Pages site
+        run: bun run build:pages
