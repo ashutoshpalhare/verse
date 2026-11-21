@@ -215,7 +215,7 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
 
         <animated.div
           {...bind()}
-          style={{ x, y, touchAction: "pan-y" }}
+          style={{ x, y, touchAction: "none" }}
           className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden"
         >
           {!imageLoaded && !imageFailed && (
