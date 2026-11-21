@@ -1,24 +1,74 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { Photo } from '../../types/photo';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { Photo } from "../../types/photo";
 
 interface PhotoMetadata {
   title?: string;
   description?: string;
 }
 
+export interface ArchiveImportPayload {
+  version: 1;
+  favorites: string[];
+  metadataOverrides: Record<string, PhotoMetadata>;
+}
+
 interface GalleryState {
   photos: Photo[];
   favorites: string[];
-  viewMode: 'grid' | 'masonry';
+  viewMode: "grid" | "masonry";
   searchQuery: string;
   metadataOverrides: Record<string, PhotoMetadata>;
-  
   setPhotos: (photos: Photo[]) => void;
   toggleFavorite: (id: string) => void;
   updatePhotoMetadata: (id: string, metadata: PhotoMetadata) => void;
-  setViewMode: (mode: 'grid' | 'masonry') => void;
+  setViewMode: (mode: "grid" | "masonry") => void;
   setSearchQuery: (query: string) => void;
+  importArchiveData: (payload: ArchiveImportPayload) => void;
+  resetArchiveData: () => void;
+}
+
+const safeStorage = {
+  getItem: (name: string): string | null => {
+    try {
+      return typeof window === "undefined" ? null : window.localStorage.getItem(name);
+    } catch {
+      return null;
+    }
+  },
+  setItem: (name: string, value: string): void => {
+    try {
+      if (typeof window !== "undefined") window.localStorage.setItem(name, value);
+    } catch {
+      // Keep the app usable when browser storage is unavailable or full.
+    }
+  },
+  removeItem: (name: string): void => {
+    try {
+      if (typeof window !== "undefined") window.localStorage.removeItem(name);
+    } catch {
+      // Ignore storage access failures; in-memory state remains available.
+    }
+  },
+};
+
+function sanitizeFavorites(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return [...new Set(value.filter((item): item is string => typeof item === "string" && item.length > 0))];
+}
+
+function sanitizeMetadata(value: unknown): Record<string, PhotoMetadata> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  const result: Record<string, PhotoMetadata> = {};
+  for (const [id, raw] of Object.entries(value)) {
+    if (!id || !raw || typeof raw !== "object" || Array.isArray(raw)) continue;
+    const item = raw as Record<string, unknown>;
+    const metadata: PhotoMetadata = {};
+    if (typeof item.title === "string") metadata.title = item.title.slice(0, 300);
+    if (typeof item.description === "string") metadata.description = item.description.slice(0, 5000);
+    if (Object.keys(metadata).length) result[id] = metadata;
+  }
+  return result;
 }
 
 export const useGalleryStore = create<GalleryState>()(
@@ -26,42 +76,54 @@ export const useGalleryStore = create<GalleryState>()(
     (set) => ({
       photos: [],
       favorites: [],
-      viewMode: 'masonry',
-      searchQuery: '',
+      viewMode: "masonry",
+      searchQuery: "",
       metadataOverrides: {},
 
-      setPhotos: (photos: Photo[]) => set({ photos }),
-      
-      toggleFavorite: (id: string) => set((state) => {
-        const isFavorite = state.favorites.includes(id);
-        const newFavorites = isFavorite 
-          ? state.favorites.filter(favId => favId !== id)
-          : [...state.favorites, id];
-        
-        return { favorites: newFavorites };
-      }),
-
-      updatePhotoMetadata: (id: string, metadata: PhotoMetadata) => set((state) => ({
-        metadataOverrides: {
-          ...state.metadataOverrides,
-          [id]: {
-            ...state.metadataOverrides[id],
-            ...metadata
-          }
-        }
-      })),
-
-      setViewMode: (viewMode: 'grid' | 'masonry') => set({ viewMode }),
-      setSearchQuery: (searchQuery: string) => set({ searchQuery }),
+      setPhotos: (photos) => set({ photos }),
+      toggleFavorite: (id) =>
+        set((state) => ({
+          favorites: state.favorites.includes(id)
+            ? state.favorites.filter((favoriteId) => favoriteId !== id)
+            : [...state.favorites, id],
+        })),
+      updatePhotoMetadata: (id, metadata) =>
+        set((state) => ({
+          metadataOverrides: {
+            ...state.metadataOverrides,
+            [id]: { ...state.metadataOverrides[id], ...metadata },
+          },
+        })),
+      setViewMode: (viewMode) => set({ viewMode }),
+      setSearchQuery: (searchQuery) => set({ searchQuery }),
+      importArchiveData: (payload) =>
+        set((state) => ({
+          favorites: [...new Set([...state.favorites, ...sanitizeFavorites(payload.favorites)])],
+          metadataOverrides: {
+            ...state.metadataOverrides,
+            ...sanitizeMetadata(payload.metadataOverrides),
+          },
+        })),
+      resetArchiveData: () => set({ favorites: [], metadataOverrides: {} }),
     }),
     {
-      name: 'nova-gallery-storage',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ 
-        favorites: state.favorites, 
+      name: "nova-gallery-storage",
+      version: 2,
+      storage: createJSONStorage(() => safeStorage),
+      partialize: (state) => ({
+        favorites: state.favorites,
         viewMode: state.viewMode,
-        metadataOverrides: state.metadataOverrides 
+        metadataOverrides: state.metadataOverrides,
       }),
-    }
-  )
+      merge: (persistedState, currentState) => {
+        const persisted = (persistedState ?? {}) as Partial<GalleryState>;
+        return {
+          ...currentState,
+          favorites: sanitizeFavorites(persisted.favorites),
+          viewMode: persisted.viewMode === "grid" ? "grid" : "masonry",
+          metadataOverrides: sanitizeMetadata(persisted.metadataOverrides),
+        };
+      },
+    },
+  ),
 );
