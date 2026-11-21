@@ -5,6 +5,7 @@ import { BottomNavigation } from "../components/gallery/BottomNavigation";
 import { PhotoViewer } from "../components/gallery/PhotoViewer";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useMemo } from "react";
+import { useGalleryPhotos } from "../hooks/use-gallery-photos";
 import { Heart } from "lucide-react";
 
 export const Route = createFileRoute("/favorites")({
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/favorites")({
 
 function Favorites() {
   const { photos, favorites, metadataOverrides } = useGalleryStore();
+  useGalleryPhotos();
   
   const favoritePhotos = useMemo(() => {
     return photos
@@ -31,20 +33,26 @@ function Favorites() {
       }));
   }, [photos, favorites, metadataOverrides]);
 
-  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+  const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
+  const selectedPhotoIndex = selectedPhotoId
+    ? favoritePhotos.findIndex((photo) => photo.id === selectedPhotoId)
+    : -1;
 
-  const handleOpenViewer = (index: number) => setSelectedPhotoIndex(index);
-  const handleCloseViewer = () => setSelectedPhotoIndex(null);
-  
+  const handleOpenViewer = (index: number) => {
+    const photo = favoritePhotos[index];
+    if (photo) setSelectedPhotoId(photo.id);
+  };
+  const handleCloseViewer = () => setSelectedPhotoId(null);
+
   const handleNext = () => {
-    if (selectedPhotoIndex !== null) {
-      setSelectedPhotoIndex((selectedPhotoIndex + 1) % favoritePhotos.length);
+    if (selectedPhotoIndex >= 0 && favoritePhotos.length > 0) {
+      setSelectedPhotoId(favoritePhotos[(selectedPhotoIndex + 1) % favoritePhotos.length]!.id);
     }
   };
 
   const handlePrev = () => {
-    if (selectedPhotoIndex !== null) {
-      setSelectedPhotoIndex((selectedPhotoIndex - 1 + favoritePhotos.length) % favoritePhotos.length);
+    if (selectedPhotoIndex >= 0 && favoritePhotos.length > 0) {
+      setSelectedPhotoId(favoritePhotos[(selectedPhotoIndex - 1 + favoritePhotos.length) % favoritePhotos.length]!.id);
     }
   };
 
@@ -91,7 +99,7 @@ function Favorites() {
       <BottomNavigation />
 
       <AnimatePresence>
-        {selectedPhotoIndex !== null && favoritePhotos[selectedPhotoIndex] && (
+        {selectedPhotoIndex >= 0 && favoritePhotos[selectedPhotoIndex] && (
           <PhotoViewer
             photo={favoritePhotos[selectedPhotoIndex]!}
             currentIndex={selectedPhotoIndex}
