@@ -202,7 +202,7 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
       </header>
 
       {/* Image gets the available viewport height; metadata never pushes it off-screen. */}
-      <div className="relative z-10 flex min-h-0 flex-1 items-center justify-center px-2 pb-2 sm:px-5 sm:pb-4 lg:px-8">
+      <div className="relative z-10 flex min-h-0 flex-1 items-center justify-center px-2 pb-2 sm:px-5 sm:pb-4 lg:px-8 lg:pr-[360px]">
         <Button
           variant="ghost"
           size="icon"
