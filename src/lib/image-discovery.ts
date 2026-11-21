@@ -1,33 +1,48 @@
 import { Photo } from "../types/photo";
 import imageManifest from "../generated/image-manifest.json";
 
+type ManifestImage = {
+  id: string;
+  filename: string;
+  size: number;
+  legacyIds: string[];
+};
+
+type ImageManifest = {
+  version: 2;
+  images: ManifestImage[];
+};
+
+const manifest = imageManifest as unknown as ImageManifest;
+
 export const discoverLocalImages = (): Photo[] => {
-  return imageManifest.map((filename) => {
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+  return manifest.images.map((image) => {
+    const filename = image.filename.split("/").pop() ?? image.filename;
     const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
-
-    const id = btoa(filename).replace(/=/g, "");
-
     const title = nameWithoutExt
       .split(/[-_]/)
-      .map(
-        (word) => word.charAt(0).toUpperCase() + word.slice(1),
-      )
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
 
-    const imageUrl = `${
-      import.meta.env.BASE_URL.replace(/\/$/, "")
-    }/images/${encodeURIComponent(filename)}`;
+    // Encode each path segment separately so nested folders remain valid URLs.
+    const encodedPath = image.filename.split("/").map(encodeURIComponent).join("/");
+    const imageUrl = `${basePath}/images/${encodedPath}`;
 
     return {
-      id,
+      id: image.id,
+      legacyIds: image.legacyIds,
       imageUrl,
       title,
       description: "Personal portrait",
-      date: new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      }).toUpperCase(),
+      date: new Date()
+        .toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        })
+        .toUpperCase(),
       isFavorite: false,
       createdAt: new Date().toISOString(),
     };
