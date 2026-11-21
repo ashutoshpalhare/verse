@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useGalleryStore } from "../lib/store/gallery-store";
-import { discoverLocalImages } from "../lib/image-discovery";
+import { useGalleryPhotos } from "../hooks/use-gallery-photos";
 import { GalleryHeader } from "../components/gallery/GalleryHeader";
 import { GalleryGrid } from "../components/gallery/GalleryGrid";
 import { BottomNavigation } from "../components/gallery/BottomNavigation";
@@ -74,14 +74,11 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { photos, setPhotos, favorites, metadataOverrides, searchQuery } = useGalleryStore();
-  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+  const { photos, favorites, metadataOverrides, searchQuery } = useGalleryStore();
+  const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
   const [showSplash, setShowSplash] = useState(true);
 
-  useEffect(() => {
-    const discovered = discoverLocalImages();
-    setPhotos(discovered);
-  }, [setPhotos]);
+  useGalleryPhotos();
 
   const processedPhotos = useMemo(() => {
     return photos.map(photo => ({
@@ -96,23 +93,28 @@ function Index() {
     });
   }, [photos, favorites, metadataOverrides, searchQuery]);
 
+  const selectedPhotoIndex = selectedPhotoId
+    ? processedPhotos.findIndex((photo) => photo.id === selectedPhotoId)
+    : -1;
+
   const handleOpenViewer = (index: number) => {
-    setSelectedPhotoIndex(index);
+    const photo = processedPhotos[index];
+    if (photo) setSelectedPhotoId(photo.id);
   };
 
   const handleCloseViewer = () => {
-    setSelectedPhotoIndex(null);
+    setSelectedPhotoId(null);
   };
 
   const handleNext = () => {
-    if (selectedPhotoIndex !== null) {
-      setSelectedPhotoIndex((selectedPhotoIndex + 1) % processedPhotos.length);
+    if (selectedPhotoIndex >= 0 && processedPhotos.length > 0) {
+      setSelectedPhotoId(processedPhotos[(selectedPhotoIndex + 1) % processedPhotos.length]!.id);
     }
   };
 
   const handlePrev = () => {
-    if (selectedPhotoIndex !== null) {
-      setSelectedPhotoIndex((selectedPhotoIndex - 1 + processedPhotos.length) % processedPhotos.length);
+    if (selectedPhotoIndex >= 0 && processedPhotos.length > 0) {
+      setSelectedPhotoId(processedPhotos[(selectedPhotoIndex - 1 + processedPhotos.length) % processedPhotos.length]!.id);
     }
   };
 
@@ -156,7 +158,7 @@ function Index() {
         <BottomNavigation />
 
         <AnimatePresence>
-          {selectedPhotoIndex !== null && processedPhotos[selectedPhotoIndex] && (
+          {selectedPhotoIndex >= 0 && processedPhotos[selectedPhotoIndex] && (
             <PhotoViewer
               photo={processedPhotos[selectedPhotoIndex]!}
               currentIndex={selectedPhotoIndex}
