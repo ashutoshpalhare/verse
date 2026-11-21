@@ -235,6 +235,9 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
               src={photo.imageUrl}
               alt={photo.title}
               draggable={false}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
               onLoad={() => setImageLoaded(true)}
               onError={() => {
                 setImageFailed(true);

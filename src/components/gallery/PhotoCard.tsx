@@ -37,6 +37,7 @@ export const PhotoCard = memo(({ photo, index, onClick }: PhotoCardProps) => {
           src={photo.imageUrl}
           alt={photo.title}
           loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
           initial={false}
           animate={{ filter: isHovered ? "brightness(0.7)" : "brightness(1)" }}
