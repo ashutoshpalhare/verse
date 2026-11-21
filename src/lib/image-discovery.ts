@@ -10,10 +10,14 @@ type ManifestImage = {
 
 type ImageManifest = {
   version: 2;
+  sourceExists: boolean;
   images: ManifestImage[];
 };
 
 const manifest = imageManifest as unknown as ImageManifest;
+
+/** False only when the source folder itself is missing; preserve local archive data then. */
+export const hasImageSource = manifest.sourceExists;
 
 export const discoverLocalImages = (): Photo[] => {
   const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
