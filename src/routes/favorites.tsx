@@ -4,7 +4,7 @@ import { GalleryGrid } from "../components/gallery/GalleryGrid";
 import { BottomNavigation } from "../components/gallery/BottomNavigation";
 import { PhotoViewer } from "../components/gallery/PhotoViewer";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useGalleryPhotos } from "../hooks/use-gallery-photos";
 import { Heart } from "lucide-react";
 
@@ -37,6 +37,10 @@ function Favorites() {
   const selectedPhotoIndex = selectedPhotoId
     ? favoritePhotos.findIndex((photo) => photo.id === selectedPhotoId)
     : -1;
+
+  useEffect(() => {
+    if (selectedPhotoId && selectedPhotoIndex < 0) setSelectedPhotoId(null);
+  }, [selectedPhotoId, selectedPhotoIndex]);
 
   const handleOpenViewer = (index: number) => {
     const photo = favoritePhotos[index];
