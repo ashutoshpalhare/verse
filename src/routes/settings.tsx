@@ -112,7 +112,7 @@ function Settings() {
         JSON.stringify({
           favorites,
           metadataOverrides,
-        }),
+        }) ?? "{}",
       ]).size,
     [favorites, metadataOverrides],
   );
@@ -125,7 +125,7 @@ function Settings() {
       favorites,
       metadataOverrides,
     };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+    const blob = new Blob([JSON.stringify(payload, null, 2) ?? "{}"], {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);
