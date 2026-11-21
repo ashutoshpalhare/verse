@@ -61,7 +61,7 @@ function sanitizeMetadata(value: unknown): Record<string, PhotoMetadata> {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
   const result: Record<string, PhotoMetadata> = {};
   for (const [id, raw] of Object.entries(value)) {
-    if (!id || !raw || typeof raw !== "object" || Array.isArray(raw)) continue;
+    if (!id || id === "__proto__" || id === "constructor" || id === "prototype" || !raw || typeof raw !== "object" || Array.isArray(raw)) continue;
     const item = raw as Record<string, unknown>;
     const metadata: PhotoMetadata = {};
     if (typeof item.title === "string") metadata.title = item.title.slice(0, 300);
@@ -108,7 +108,6 @@ export const useGalleryStore = create<GalleryState>()(
     }),
     {
       name: "nova-gallery-storage",
-      version: 2,
       storage: createJSONStorage(() => safeStorage),
       partialize: (state) => ({
         favorites: state.favorites,
