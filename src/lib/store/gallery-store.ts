@@ -19,7 +19,7 @@ interface GalleryState {
   viewMode: "grid" | "masonry";
   searchQuery: string;
   metadataOverrides: Record<string, PhotoMetadata>;
-  setPhotos: (photos: Photo[]) => void;
+  setPhotos: (photos: Photo[], pruneOrphans?: boolean) => void;
   toggleFavorite: (id: string) => void;
   updatePhotoMetadata: (id: string, metadata: PhotoMetadata) => void;
   setViewMode: (mode: "grid" | "masonry") => void;
@@ -80,7 +80,50 @@ export const useGalleryStore = create<GalleryState>()(
       searchQuery: "",
       metadataOverrides: {},
 
-      setPhotos: (photos) => set({ photos }),
+      setPhotos: (photos, pruneOrphans = true) =>
+        set((state) => {
+          const validIds = new Set(photos.map((photo) => photo.id));
+          const legacyToStable = new Map<string, string>();
+
+          for (const photo of photos) {
+            for (const legacyId of photo.legacyIds ?? []) {
+              legacyToStable.set(legacyId, photo.id);
+            }
+          }
+
+          const migrateId = (id: string) => legacyToStable.get(id) ?? id;
+          const favorites = pruneOrphans
+            ? [...new Set(state.favorites.map(migrateId).filter((id) => validIds.has(id)))]
+            : [...new Set(state.favorites.map(migrateId))];
+
+          let metadataOverrides = state.metadataOverrides;
+          if (pruneOrphans) {
+            metadataOverrides = {};
+            // Apply legacy entries first so an already-migrated stable entry wins.
+            const entries = Object.entries(state.metadataOverrides).sort(
+              ([left], [right]) => Number(validIds.has(left)) - Number(validIds.has(right)),
+            );
+            for (const [oldId, metadata] of entries) {
+              const id = migrateId(oldId);
+              if (validIds.has(id)) {
+                metadataOverrides[id] = { ...metadataOverrides[id], ...metadata };
+              }
+            }
+          } else {
+            metadataOverrides = Object.fromEntries(
+              Object.entries(state.metadataOverrides).map(([id, metadata]) => [migrateId(id), metadata]),
+            );
+          }
+
+          return {
+            photos: photos.map((photo) => ({
+              ...photo,
+              isFavorite: favorites.includes(photo.id),
+            })),
+            favorites,
+            metadataOverrides,
+          };
+        }),
       toggleFavorite: (id) =>
         set((state) => ({
           favorites: state.favorites.includes(id)
