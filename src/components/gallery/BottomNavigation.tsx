@@ -13,7 +13,7 @@ export function BottomNavigation() {
   ];
 
   return (
-    <nav className="fixed bottom-6 left-1/2 z-40 w-[90%] max-w-md -translate-x-1/2 sm:bottom-8">
+    <nav aria-label="Main navigation" className="fixed bottom-6 left-1/2 z-40 w-[min(92%,28rem)] -translate-x-1/2 sm:bottom-8">
       <div className="flex items-center justify-around rounded-full border border-white/10 bg-black/60 p-2 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
         {navItems.map((item) => {
           const isActive = location.pathname === item.to;
@@ -21,8 +21,9 @@ export function BottomNavigation() {
             <Link
               key={item.label}
               to={item.to}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
-                "group flex flex-col items-center gap-1 rounded-full px-4 py-2 transition-all duration-300",
+                "group flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-full px-2 py-2 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black",
                 isActive ? "bg-white/10 text-white" : "text-white/40 hover:text-white/60"
               )}
             >
