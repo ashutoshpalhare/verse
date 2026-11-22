@@ -24,11 +24,11 @@ export function BottomNavigation() {
               aria-current={isActive ? "page" : undefined}
               className={cn(
                 "group flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-full px-2 py-2 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black",
-                isActive ? "bg-white/10 text-white" : "text-white/40 hover:text-white/60"
+                isActive ? "bg-white/10 text-white" : "text-white/70 hover:text-white"
               )}
             >
               <item.icon className={cn("h-5 w-5", isActive && "fill-current")} />
-              <span className="text-[8px] font-bold tracking-[0.2em] uppercase">
+              <span className="text-[9px] font-bold tracking-[0.16em] uppercase">
                 {item.label}
               </span>
             </Link>
