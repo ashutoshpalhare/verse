@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -38,6 +38,7 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
   const [editDescription, setEditDescription] = useState("");
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!photo) return;
@@ -47,6 +48,45 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
     setImageLoaded(false);
     setImageFailed(false);
   }, [photo?.id]);
+
+  // Move focus into the modal and keep keyboard navigation inside it.
+  useEffect(() => {
+    if (!photo) return;
+    const previouslyFocused = document.activeElement;
+    closeButtonRef.current?.focus();
+
+    const handleTab = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const dialog = closeButtonRef.current?.closest('[role="dialog"]');
+      if (!dialog) return;
+      const focusable = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => element.offsetParent !== null);
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+      const first = focusable[0]!;
+      const last = focusable[focusable.length - 1]!;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleTab);
+    return () => {
+      document.removeEventListener("keydown", handleTab);
+      if (previouslyFocused instanceof HTMLElement && previouslyFocused.isConnected) {
+        previouslyFocused.focus();
+      }
+    };
+  }, [Boolean(photo)]);
 
   // Lock the page behind the viewer without losing its exact scroll position.
   useEffect(() => {
@@ -193,6 +233,7 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
             variant="ghost"
             size="icon"
             aria-label="Close photo viewer"
+            ref={closeButtonRef}
             onClick={onClose}
             className="h-9 w-9 rounded-full bg-white/5 text-white/70 hover:bg-white/10 hover:text-white sm:h-10 sm:w-10"
           >
