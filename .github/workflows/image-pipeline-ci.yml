@@ -34,3 +34,5 @@ jobs:
         run: bun run test:images
       - name: Build GitHub Pages site
         run: bun run build:pages
+      - name: Test generated SEO pages
+        run: bun run test:seo

@@ -13,64 +13,26 @@ import { Button } from "../components/ui/button";
 
 export const Route = createFileRoute("/")({
   component: Index,
- head: () => ({
-  meta: [
-    {
-      title: "AP VERSE — AP's Visual Universe",
-    },
-    {
-      name: "description",
-      content:
-        "AP VERSE — a cinematic personal portrait gallery and visual universe of Ashutosh Palhare.",
-    },
-    {
-      name: "author",
-      content: "Ashutosh Palhare",
-    },
-    {
-      name: "robots",
-      content: "index, follow",
-    },
-
-    // Open Graph
-    {
-      property: "og:title",
-      content: "AP VERSE — AP's Visual Universe",
-    },
-    {
-      property: "og:description",
-      content:
-        "A cinematic personal portrait gallery and visual universe of Ashutosh Palhare.",
-    },
-    {
-      property: "og:type",
-      content: "website",
-    },
-    {
-      property: "og:url",
-      content: "https://ashutoshpalhare.github.io/verse/",
-    },
-    {
-      property: "og:site_name",
-      content: "AP VERSE",
-    },
-
-    // Twitter / X
-    {
-      name: "twitter:card",
-      content: "summary_large_image",
-    },
-    {
-      name: "twitter:title",
-      content: "AP VERSE — AP's Visual Universe",
-    },
-    {
-      name: "twitter:description",
-      content:
-        "A cinematic personal portrait gallery and visual universe by Ashutosh Palhare.",
-    },
-  ],
-}),
+  head: () => ({
+    meta: [
+      { title: "AP VERSE — AP's Visual Universe" },
+      { name: "description", content: "Explore AP VERSE, a cinematic public portrait gallery and visual collection by developer Ashutosh Palhare." },
+      { name: "author", content: "Ashutosh Palhare" },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "AP VERSE — AP's Visual Universe" },
+      { property: "og:description", content: "A cinematic public portrait gallery and visual collection by Ashutosh Palhare." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://ashutoshpalhare.github.io/verse/" },
+      { property: "og:site_name", content: "AP VERSE" },
+      { property: "og:image", content: "https://github.com/ashutoshpalhare.png?size=1200" },
+      { property: "og:image:alt", content: "Ashutosh Palhare profile portrait" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "AP VERSE — AP's Visual Universe" },
+      { name: "twitter:description", content: "A cinematic public portrait gallery and visual collection by Ashutosh Palhare." },
+      { name: "twitter:image", content: "https://github.com/ashutoshpalhare.png?size=1200" },
+    ],
+    links: [{ rel: "canonical", href: "https://ashutoshpalhare.github.io/verse/" }],
+  }),
 });
 
 function Index() {
@@ -88,7 +50,7 @@ function Index() {
       description: metadataOverrides[photo.id]?.description || photo.description
     })).filter(photo => {
       const search = searchQuery.toLowerCase();
-      return photo.title.toLowerCase().includes(search) || 
+      return photo.title.toLowerCase().includes(search) ||
              photo.description.toLowerCase().includes(search);
     });
   }, [photos, favorites, metadataOverrides, searchQuery]);
@@ -106,9 +68,7 @@ function Index() {
     if (photo) setSelectedPhotoId(photo.id);
   };
 
-  const handleCloseViewer = () => {
-    setSelectedPhotoId(null);
-  };
+  const handleCloseViewer = () => setSelectedPhotoId(null);
 
   const handleNext = () => {
     if (selectedPhotoIndex >= 0 && processedPhotos.length > 0) {
@@ -125,11 +85,9 @@ function Index() {
   return (
     <>
       <SplashScreen onComplete={() => setShowSplash(false)} />
-      
       <main className="min-h-screen bg-background text-foreground pb-32">
         <GalleryHeader />
-        
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: showSplash ? 0 : 1 }}
           transition={{ duration: 0.8 }}
@@ -142,14 +100,12 @@ function Index() {
               <div className="h-24 w-24 rounded-full bg-white/5 flex items-center justify-center mb-8 ring-1 ring-white/10">
                 <ImageOff className="h-10 w-10 text-white/20" />
               </div>
-              <h2 className="text-2xl font-black uppercase tracking-tighter mb-4">
-                AP VERSE IS EMPTY
-              </h2>
+              <h2 className="text-2xl font-black uppercase tracking-tighter mb-4">AP VERSE IS EMPTY</h2>
               <p className="text-sm text-white/40 max-w-xs mb-8 leading-relaxed">
                 Add your portraits to the <code className="bg-white/10 px-2 py-0.5 rounded text-white/60">/images</code> folder and build your visual universe.
               </p>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => window.location.reload()}
                 className="rounded-full border-white/10 bg-white/5 hover:bg-white/10 text-[10px] font-bold tracking-[0.2em] uppercase px-8 h-12 transition-all"
               >
@@ -158,9 +114,7 @@ function Index() {
             </div>
           )}
         </motion.div>
-
         <BottomNavigation />
-
         <AnimatePresence>
           {selectedPhotoIndex >= 0 && processedPhotos[selectedPhotoIndex] && (
             <PhotoViewer

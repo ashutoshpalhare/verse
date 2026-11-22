@@ -12,8 +12,9 @@ export const Route = createFileRoute("/favorites")({
   component: Favorites,
   head: () => ({
     meta: [
-      { title: "FAVORITES | AP VERSE" },
-      { name: "description", content: "Your curated private visual universe." },
+      { title: "Favorites | AP VERSE" },
+      { name: "description", content: "Your locally curated favorite portraits in AP VERSE." },
+      { name: "robots", content: "noindex, follow" },
     ],
   }),
 });
