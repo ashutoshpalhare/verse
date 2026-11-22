@@ -40,7 +40,10 @@ import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/settings")({
   component: Settings,
-  head: () => ({ meta: [{ title: "SETTINGS | AP VERSE" }] }),
+  head: () => ({ meta: [
+    { title: "Settings | AP VERSE" },
+    { name: "robots", content: "noindex, nofollow" },
+  ] }),
 });
 
 const THEMES: { id: ThemeType; name: string; color: string }[] = [
