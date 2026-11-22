@@ -39,6 +39,7 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const isOpen = photo !== null;
 
   useEffect(() => {
     if (!photo) return;
@@ -51,7 +52,7 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
 
   // Move focus into the modal and keep keyboard navigation inside it.
   useEffect(() => {
-    if (!photo) return;
+    if (!isOpen) return;
     const previouslyFocused = document.activeElement;
     closeButtonRef.current?.focus();
 
@@ -63,7 +64,7 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
         dialog.querySelectorAll<HTMLElement>(
           'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
         )
-      ).filter((element) => element.offsetParent !== null);
+      ).filter((element) => element.getClientRects().length > 0);
       if (focusable.length === 0) {
         event.preventDefault();
         return;
@@ -86,7 +87,7 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
         previouslyFocused.focus();
       }
     };
-  }, [Boolean(photo)]);
+  }, [isOpen]);
 
   // Lock the page behind the viewer without losing its exact scroll position.
   useEffect(() => {
@@ -260,7 +261,7 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
           className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden"
         >
           {!imageLoaded && !imageFailed && (
-            <div className="absolute inset-0 flex items-center justify-center" aria-label="Loading photo">
+            <div className="absolute inset-0 flex items-center justify-center" role="status" aria-live="polite" aria-label="Loading photo">
               <LoaderCircle className="h-7 w-7 animate-spin text-white/45" />
             </div>
           )}
