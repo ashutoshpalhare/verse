@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "build:pages": "bun run generate:images && vite build --config vite.pages.config.ts",
+    "build:pages": "bun run generate:images && vite build --config vite.pages.config.ts && bun run generate:seo",
+    "generate:seo": "node scripts/generate-seo-pages.mjs",
+    "test:seo": "node scripts/test-seo-pages.mjs",
     "generate:images": "bun scripts/generate-image-manifest.mjs",
     "test:images": "node scripts/test-image-manifest.mjs"
   },
