@@ -44,8 +44,9 @@ export function GalleryHeader() {
             {isSearching && (
               <Input
                 autoFocus
+                aria-label="Search photos"
                 placeholder="SEARCH UNIVERSE..."
-                className="h-10 w-40 md:w-64 bg-white/5 border-white/10 rounded-full px-5 text-[10px] font-bold tracking-widest uppercase"
+                className="h-10 w-32 rounded-full border-white/15 bg-white/5 px-4 text-[10px] font-bold uppercase tracking-widest focus-visible:ring-2 focus-visible:ring-white sm:w-40 md:w-64"
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             )}
