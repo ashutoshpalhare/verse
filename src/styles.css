@@ -174,3 +174,28 @@ html[data-fluid-animations="false"] *::after {
   transition-duration: 0.01ms !important;
   caret-color: auto;
 }
+
+
+/* Consistent, high-visibility keyboard focus without changing the visual theme. */
+@layer base {
+  :where(a, button, input, textarea, select, [role="button"], [tabindex]):focus-visible {
+    outline: 2px solid var(--foreground);
+    outline-offset: 3px;
+  }
+
+  :where(button, a) {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Honor the operating system preference even when the in-app animation toggle is on. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

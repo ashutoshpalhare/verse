@@ -1,16 +1,18 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useReducedMotion } from "framer-motion";
 
 export function SplashScreen({ onComplete }: { onComplete: () => void }) {
   const [isVisible, setIsVisible] = useState(true);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
       setTimeout(onComplete, 800); // Wait for fade out
-    }, 2800);
+    }, reduceMotion ? 100 : 2800);
     return () => clearTimeout(timer);
-  }, [onComplete]);
+  }, [onComplete, reduceMotion]);
 
   return (
     <AnimatePresence>
@@ -18,14 +20,14 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 0.8, ease: "easeInOut" }}
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#050505] overflow-hidden"
         >
           {/* Subtle Ambient Glow */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 0.15, scale: 1 }}
-            transition={{ duration: 2, ease: "easeOut" }}
+            transition={reduceMotion ? { duration: 0 } : { duration: 2, ease: "easeOut" }}
             className="absolute h-[500px] w-[500px] rounded-full bg-white/20 blur-[120px]"
           />
 
@@ -33,7 +35,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+              transition={reduceMotion ? { duration: 0 } : { duration: 1, delay: 0.5, ease: "easeOut" }}
             >
               <h1 className="text-4xl md:text-6xl font-black tracking-[-0.05em] text-white uppercase">
                 AP <span className="text-white/40">VERSE</span>
@@ -43,7 +45,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 1.2 }}
+              transition={reduceMotion ? { duration: 0 } : { duration: 1, delay: 1.2 }}
               className="text-[10px] md:text-xs font-bold tracking-[0.5em] text-white/30 uppercase"
             >
               AP'S VISUAL UNIVERSE
