@@ -51,7 +51,7 @@ export const PhotoCard = memo(({ photo, index, onClick }: PhotoCardProps) => {
 
         <div className={cn(
           "absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/90 via-black/20 to-transparent p-4 text-white sm:p-6",
-          "opacity-100 sm:opacity-0 sm:transition-opacity sm:duration-300 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100"
+          "opacity-100 sm:opacity-0 sm:transition-opacity sm:duration-300 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
         )}>
           <h3 className="font-sans text-base font-bold tracking-tight uppercase sm:text-xl">
             {photo.title}
