@@ -1,16 +1,18 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useReducedMotion } from "framer-motion";
 
 export function SplashScreen({ onComplete }: { onComplete: () => void }) {
   const [isVisible, setIsVisible] = useState(true);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
       setTimeout(onComplete, 800); // Wait for fade out
-    }, 2800);
+    }, reduceMotion ? 100 : 2800);
     return () => clearTimeout(timer);
-  }, [onComplete]);
+  }, [onComplete, reduceMotion]);
 
   return (
     <AnimatePresence>
