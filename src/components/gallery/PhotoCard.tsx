@@ -1,5 +1,5 @@
-import { useState, memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { memo } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { Photo } from "../../types/photo";
 import { useGalleryStore } from "../../lib/store/gallery-store";
@@ -14,84 +14,74 @@ interface PhotoCardProps {
 
 export const PhotoCard = memo(({ photo, index, onClick }: PhotoCardProps) => {
   const toggleFavorite = useGalleryStore((state) => state.toggleFavorite);
-  const [isHovered, setIsHovered] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   return (
     <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.95, y: 20 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ 
-        duration: 0.4, 
-        delay: Math.min(index * 0.05, 1),
-        ease: [0.23, 1, 0.32, 1]
+      layout={!reduceMotion}
+      initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={reduceMotion ? { duration: 0 } : {
+        duration: 0.35,
+        delay: Math.min(index * 0.035, 0.6),
+        ease: [0.23, 1, 0.32, 1],
       }}
-      whileHover={{ scale: 1.02 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={onClick}
-      className="group relative cursor-pointer overflow-hidden rounded-[18px] border border-white/5 bg-secondary/20 shadow-2xl transition-all duration-500"
+      className="group relative overflow-hidden rounded-[18px] border border-white/10 bg-secondary/20 shadow-2xl"
     >
-      <div className="aspect-auto overflow-hidden">
-        <motion.img
-          src={photo.imageUrl}
-          alt={photo.title}
-          loading="lazy"
-          decoding="async"
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-          initial={false}
-          animate={{ filter: isHovered ? "brightness(0.7)" : "brightness(1)" }}
-        />
-      </div>
-
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/90 via-black/20 to-transparent p-6 text-white"
-          >
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-            >
-              <h3 className="font-sans text-xl font-bold tracking-tight uppercase">
-                {photo.title}
-              </h3>
-              <p className="mt-1 line-clamp-2 text-sm text-white/70">
-                {photo.description}
-              </p>
-              <div className="mt-4 flex items-center justify-between">
-                <span className="text-[10px] font-medium tracking-[0.2em] text-white/50 uppercase">
-                  {photo.date}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={cn(
-                    "h-8 w-8 rounded-full transition-colors",
-                    photo.isFavorite ? "text-red-500 hover:text-red-600" : "text-white/70 hover:text-white"
-                  )}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFavorite(photo.id);
-                  }}
-                >
-                  <Heart className={cn("h-4 w-4", photo.isFavorite && "fill-current")} />
-                </Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      
-      {photo.isFavorite && !isHovered && (
-        <div className="absolute top-4 right-4">
-          <Heart className="h-4 w-4 fill-red-500 text-red-500 drop-shadow-lg" />
+      <motion.button
+        type="button"
+        onClick={onClick}
+        aria-label={`Open photo: ${photo.title}`}
+        className="relative block w-full cursor-pointer overflow-hidden text-left focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        whileHover={reduceMotion ? undefined : { scale: 1.015 }}
+        whileTap={reduceMotion ? undefined : { scale: 0.99 }}
+      >
+        <div className="aspect-auto overflow-hidden">
+          <img
+            src={photo.imageUrl}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className={cn(
+              "h-full w-full object-cover",
+              !reduceMotion && "transition-transform duration-700 ease-out group-hover:scale-110 group-focus-visible:scale-105"
+            )}
+          />
         </div>
-      )}
+
+        <div className={cn(
+          "absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/90 via-black/20 to-transparent p-4 text-white sm:p-6",
+          "opacity-100 sm:opacity-0 sm:transition-opacity sm:duration-300 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100"
+        )}>
+          <h3 className="font-sans text-base font-bold tracking-tight uppercase sm:text-xl">
+            {photo.title}
+          </h3>
+          {photo.description && (
+            <p className="mt-1 line-clamp-2 text-xs text-white/75 sm:text-sm">
+              {photo.description}
+            </p>
+          )}
+          <span className="mt-3 text-[9px] font-medium tracking-[0.2em] text-white/70 uppercase">
+            {photo.date}
+          </span>
+        </div>
+      </motion.button>
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        aria-label={photo.isFavorite ? `Remove ${photo.title} from favorites` : `Add ${photo.title} to favorites`}
+        aria-pressed={photo.isFavorite}
+        onClick={() => toggleFavorite(photo.id)}
+        className={cn(
+          "absolute right-3 top-3 z-20 h-10 w-10 rounded-full border border-white/15 bg-black/65 text-white shadow-lg backdrop-blur-md",
+          "opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:group-focus-within:opacity-100",
+          photo.isFavorite && "text-red-400 sm:opacity-100"
+        )}
+      >
+        <Heart className={cn("h-4 w-4", photo.isFavorite && "fill-current")} />
+      </Button>
     </motion.div>
   );
 });
