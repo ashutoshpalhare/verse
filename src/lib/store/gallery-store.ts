@@ -64,8 +64,8 @@ function sanitizeMetadata(value: unknown): Record<string, PhotoMetadata> {
     if (!id || id === "__proto__" || id === "constructor" || id === "prototype" || !raw || typeof raw !== "object" || Array.isArray(raw)) continue;
     const item = raw as Record<string, unknown>;
     const metadata: PhotoMetadata = {};
-    if (typeof item.title === "string") metadata.title = item.title.slice(0, 300);
-    if (typeof item.description === "string") metadata.description = item.description.slice(0, 5000);
+    if (typeof item["title"] === "string") metadata.title = item.title.slice(0, 300);
+    if (typeof item["description"] === "string") metadata.description = item.description.slice(0, 5000);
     if (Object.keys(metadata).length) result[id] = metadata;
   }
   return result;
