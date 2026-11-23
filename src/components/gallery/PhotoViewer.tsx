@@ -42,13 +42,13 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
   const isOpen = photo !== null;
 
   useEffect(() => {
-    if (!photo) return;
+    if (!photo?.id) return;
     setEditTitle(photo.title);
     setEditDescription(photo.description);
     setIsEditing(false);
     setImageLoaded(false);
     setImageFailed(false);
-  }, [photo?.id]);
+  }, [photo?.id, photo?.title, photo?.description]);
 
   // Move focus into the modal and keep keyboard navigation inside it.
   useEffect(() => {
@@ -126,7 +126,8 @@ export function PhotoViewer({ photo, onClose, onNext, onPrev, currentIndex, tota
         return;
       }
       if (last && Math.abs(mx) > 90 && Math.abs(mx) > Math.abs(my)) {
-        mx > 0 ? onPrev() : onNext();
+        if (mx > 0) onPrev();
+        else onNext();
       } else if (last && my > 140 && my > Math.abs(mx)) {
         onClose();
       }
