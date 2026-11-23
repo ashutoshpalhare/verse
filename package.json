@@ -14,7 +14,8 @@
     "generate:seo": "node scripts/generate-seo-pages.mjs",
     "test:seo": "node scripts/test-seo-pages.mjs",
     "generate:images": "bun scripts/generate-image-manifest.mjs",
-    "test:images": "node scripts/test-image-manifest.mjs"
+    "test:images": "node scripts/test-image-manifest.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
