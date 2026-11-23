@@ -5,7 +5,8 @@ export type Photo = {
   imageUrl: string;
   title: string;
   description: string;
-  date: string;
+  /** Omitted when the source image has no verified capture date. */
+  date?: string;
   isFavorite: boolean;
   createdAt: string;
 };
