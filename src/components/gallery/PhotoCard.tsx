@@ -33,8 +33,7 @@ export const PhotoCard = memo(({ photo, index, onClick }: PhotoCardProps) => {
         onClick={onClick}
         aria-label={`Open photo: ${photo.title}`}
         className="relative block w-full cursor-pointer overflow-hidden text-left focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-        whileHover={reduceMotion ? undefined : { scale: 1.015 }}
-        whileTap={reduceMotion ? undefined : { scale: 0.99 }}
+        {...(!reduceMotion ? { whileHover: { scale: 1.015 }, whileTap: { scale: 0.99 } } : {})}
       >
         <div className="aspect-auto overflow-hidden">
           <img

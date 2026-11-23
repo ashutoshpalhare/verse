@@ -20,7 +20,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = window.document.documentElement;
     root.classList.remove(...THEME_CLASSES);
     root.classList.add(`theme-${theme}`);
-    root.dataset.fluidAnimations = String(fluidAnimations);
+    root.dataset["fluidAnimations"] = String(fluidAnimations);
     root.style.fontSize = `${interfaceScale}%`;
   }, [theme, fluidAnimations, interfaceScale]);
 

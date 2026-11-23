@@ -60,24 +60,24 @@ function validateArchivePayload(value: unknown): ArchiveImportPayload {
   }
   const data = value as Record<string, unknown>;
   if (
-    data.version !== 1 ||
-    !Array.isArray(data.favorites) ||
-    !data.favorites.every((item) => typeof item === "string") ||
-    !data.metadataOverrides ||
-    typeof data.metadataOverrides !== "object" ||
-    Array.isArray(data.metadataOverrides)
+    data["version"] !== 1 ||
+    !Array.isArray(data["favorites"]) ||
+    !data["favorites"].every((item) => typeof item === "string") ||
+    !data["metadataOverrides"] ||
+    typeof data["metadataOverrides"] !== "object" ||
+    Array.isArray(data["metadataOverrides"])
   ) {
     throw new Error("Unsupported archive format or invalid archive data.");
   }
 
-  for (const item of Object.values(data.metadataOverrides)) {
+  for (const item of Object.values(data["metadataOverrides"])) {
     if (!item || typeof item !== "object" || Array.isArray(item)) {
       throw new Error("Archive contains invalid photo metadata.");
     }
     const metadata = item as Record<string, unknown>;
     if (
-      (metadata.title !== undefined && typeof metadata.title !== "string") ||
-      (metadata.description !== undefined && typeof metadata.description !== "string")
+      (metadata["title"] !== undefined && typeof metadata["title"] !== "string") ||
+      (metadata["description"] !== undefined && typeof metadata["description"] !== "string")
     ) {
       throw new Error("Archive contains invalid photo metadata.");
     }
@@ -85,8 +85,8 @@ function validateArchivePayload(value: unknown): ArchiveImportPayload {
 
   return {
     version: 1,
-    favorites: data.favorites,
-    metadataOverrides: data.metadataOverrides as ArchiveImportPayload["metadataOverrides"],
+    favorites: data["favorites"],
+    metadataOverrides: data["metadataOverrides"] as ArchiveImportPayload["metadataOverrides"],
   };
 }
 

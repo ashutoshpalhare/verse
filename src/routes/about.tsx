@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BottomNavigation } from "../components/gallery/BottomNavigation";
-import { Mail, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { SiGithub, SiX } from "@icons-pack/react-simple-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Button } from "../components/ui/button";
@@ -35,7 +35,6 @@ function AboutPage() {
     { name: "GitHub", icon: SiGithub, url: "https://github.com/ashutoshpalhare" },
     { name: "Twitter", icon: SiX, url: "https://twitter.com/ashu_palhare" },
     { name: "LinkedIn", icon: ExternalLink, url: "https://linkedin.com/in/ashutoshpalhare" },
-    { name: "Email", icon: Mail, url: "mailto:ashutosh@example.com" },
   ];
 
   return (
