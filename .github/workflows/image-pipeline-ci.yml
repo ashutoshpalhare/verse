@@ -5,6 +5,12 @@ on:
     branches: [main]
     paths:
       - "scripts/**"
+      - "README.md"
+      - "ADMIN_GUIDE.md"
+      - "LICENSE"
+      - "public/robots.txt"
+      - "public/sitemap.xml"
+      - "src/routes/**"
       - "src/lib/image-discovery.ts"
       - "src/lib/store/gallery-store.ts"
       - "src/types/photo.ts"
@@ -30,6 +36,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
+      - name: TypeScript check
+        run: bun run typecheck
+      - name: ESLint
+        run: bun run lint
       - name: Run image manifest regression tests
         run: bun run test:images
       - name: Build GitHub Pages site
