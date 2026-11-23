@@ -60,10 +60,10 @@ function validateArchivePayload(value: unknown): ArchiveImportPayload {
   }
   const data = value as Record<string, unknown>;
   if (
-    data.version !== 1 ||
-    !Array.isArray(data.favorites) ||
+    data["version"] !== 1 ||
+    !Array.isArray(data["favorites"]) ||
     !data.favorites.every((item) => typeof item === "string") ||
-    !data.metadataOverrides ||
+    !data["metadataOverrides"] ||
     typeof data.metadataOverrides !== "object" ||
     Array.isArray(data.metadataOverrides)
   ) {
@@ -76,8 +76,8 @@ function validateArchivePayload(value: unknown): ArchiveImportPayload {
     }
     const metadata = item as Record<string, unknown>;
     if (
-      (metadata.title !== undefined && typeof metadata.title !== "string") ||
-      (metadata.description !== undefined && typeof metadata.description !== "string")
+      (metadata["title"] !== undefined && typeof metadata.title !== "string") ||
+      (metadata["description"] !== undefined && typeof metadata.description !== "string")
     ) {
       throw new Error("Archive contains invalid photo metadata.");
     }
