@@ -2,233 +2,128 @@
 
 > **AP's Visual Universe**
 
-A premium, cinematic personal portrait gallery — a private digital universe built to showcase portraits and selfies in a dark, immersive, futuristic interface.
+AP VERSE is a cinematic, public portrait gallery built with React and Vite. The gallery displays image files committed to this repository; favorites, appearance preferences, and edited photo details are saved locally in each visitor's browser.
 
----
+**Live site:** https://ashutoshpalhare.github.io/verse/
 
-## Live Demo
+## Features
 
-🌐 **GitHub Pages:** `https://ashutoshpalhare.github.io/verse/`
+- **Automatic image discovery** — Add images to `public/images/`; the build generates a manifest automatically.
+- **Nested folders** — Organize images in subfolders under `public/images/`.
+- **Supported formats** — JPG, JPEG, PNG, WebP, and AVIF (case-insensitive extensions).
+- **Stable image identity** — SHA-256 content IDs, duplicate detection, and migration from legacy filename IDs.
+- **Photo viewer** — Responsive full-screen viewer with aspect-ratio preservation, keyboard navigation, and touch gestures.
+- **Favorites, search, and metadata** — Favorites and edited titles/descriptions persist in browser storage.
+- **Appearance settings** — Themes, animation preference, and interface scale.
+- **Archive backup** — Export/import favorites and metadata as JSON from Settings. Image files are not included in the backup.
+- **Static SEO pages** — Route-specific HTML metadata, social cards, structured data, sitemap, and robots rules.
+- **GitHub Pages deployment** — Static build and deployment through GitHub Actions. No application backend is required.
 
----
-
-## ✨ Features
-
-- **Automatic Local Image Discovery** — Drop photos into `public/images/` and the gallery auto-detects them. No manual arrays, no uploads.
-- **Cinematic Full-Screen Viewer** — Click any portrait to open a responsive lightbox with original aspect ratio preserved, gesture/keyboard navigation, and persistent metadata.
-- **Favorites & Search** — Curate a private favorites stream and search across titles/descriptions.
-- **Masonry ↔ Grid Toggle** — Choose between a dynamic masonry waterfall or a clean uniform grid.
-- **Multi-Theme Engine** — Switch between Cinematic, Midnight, Obsidian, Emerald, and Crimson visual themes.
-- **Mobile-First Gestures** — Swipe to navigate/close, double-tap to favorite, built with `@use-gesture/react`.
-- **Metadata Persistence** — Edited titles and descriptions are saved to `localStorage`.
-- **About Page** — A dedicated creator profile page with social links.
-- **GitHub Pages Ready** — Includes a static build config and GitHub Actions workflow for zero-config deployment.
-
----
-
-## 🛠 Tech Stack
+## Tech stack
 
 | Layer | Technology |
-|-------|------------|
-| Framework | [TanStack Start](https://tanstack.com/start) + [React 19](https://react.dev) |
-| Router | [TanStack Router](https://tanstack.com/router) |
-| Styling | [Tailwind CSS v4](https://tailwindcss.com) + OKLCH color tokens |
-| UI Components | [shadcn/ui](https://ui.shadcn.com) |
-| Animation | [Framer Motion](https://www.framer.com/motion/) + `@use-gesture/react` |
-| State | [Zustand](https://github.com/pmndrs/zustand) with `persist` middleware |
-| Icons | [Lucide React](https://lucide.dev) + [Simple Icons](https://simpleicons.org) |
-| Build Tool | [Vite 8](https://vitejs.dev) |
-| Package Manager | [Bun](https://bun.sh) |
+|---|---|
+| UI | React 19, TypeScript |
+| Routing | TanStack Router |
+| Styling | Tailwind CSS 4 |
+| Animation | Framer Motion |
+| State | Zustand with persistence |
+| Icons | Lucide React and Simple Icons |
+| Static build | Vite 8 |
+| Package manager | Bun |
+| Hosting | GitHub Pages |
 
----
+## Run locally
 
-## 🚀 Quick Start
+### Requirements
 
-### Prerequisites
-
-- [Bun](https://bun.sh/docs/installation) installed on your machine
+- [Bun](https://bun.sh/docs/installation)
 - Git
 
-### 1. Clone the repository
+### Setup
 
 ```bash
 git clone https://github.com/ashutoshpalhare/verse.git
 cd verse
-```
-
-### 2. Install dependencies
-
-```bash
 bun install
+bun run dev
 ```
 
-### 3. Add your photos
+Open the local URL printed by Vite. The `dev` script generates the image manifest before starting the app.
 
-Create the folder and place your portraits inside:
+## Add or update photos
 
-```bash
-mkdir -p public/images
-```
+1. Add JPG, JPEG, PNG, WebP, or AVIF files under `public/images/`. Subfolders are supported.
+2. Commit and push the image files to the repository.
+3. The development/build scripts regenerate `src/generated/image-manifest.json`; do not edit that generated file manually.
+4. For the live site, merge/push the changes to `main`. GitHub Actions rebuilds and deploys the site.
 
-Drop your `.jpg`, `.jpeg`, `.png`, or `.webp` files into `public/images/`.
+The manifest uses the image file's content hash as its stable ID. Exact duplicate image files are deduplicated in the gallery. Hidden files and unsupported file types are ignored.
 
-> **Tip:** Use meaningful filenames. The app auto-generates initial titles from them.
+**Important:** A GitHub Pages site backed by a public repository is public. Images committed under `public/images/` are published as static assets and must not be treated as private storage.
 
-### 4. Run locally
+## Local data and backups
 
-```bash
-bun dev
-```
+- Favorites, photo metadata overrides, themes, animation preference, and interface scale are stored in the current browser's `localStorage`.
+- Browser storage is device/browser-specific. There is no account, server database, or cloud synchronization.
+- Settings can export/import favorites and metadata as a JSON file. The original photos remain in the repository and are not embedded in the JSON backup.
+- Clear browser storage only after exporting a backup if you need to preserve local changes.
 
-Open `http://localhost:8080` in your browser.
+## GitHub Pages deployment
 
----
+The production deployment uses `vite.pages.config.ts` and the `build:pages` script. It builds the static site into `dist-pages/` with the repository base path `/verse/`.
 
-## 📸 How to Add Photos
+1. In the repository, open **Settings → Pages**.
+2. Set the publishing source to **GitHub Actions**.
+3. Merge changes into `main` or run the deployment workflow manually.
+4. Check the **Actions** tab for a successful **Deploy AP VERSE to GitHub Pages** run.
 
-AP VERSE uses **Vite's `import.meta.glob`** to automatically discover images at build time.
+Live URL: https://ashutoshpalhare.github.io/verse/
 
-1. Copy your portrait images into `public/images/`.
-2. Restart the dev server (or rebuild) so Vite picks up the new files.
-3. The gallery will automatically display them with generated metadata.
+Do not use the default `bun run build` output as the GitHub Pages artifact; Pages uses the dedicated `build:pages` configuration.
 
-### Supported formats
+## Useful scripts
 
-- `.jpg`
-- `.jpeg`
-- `.png`
-- `.webp`
-
-### Metadata editing
-
-- Click any photo to open the viewer.
-- Click the **Edit** icon to update the title and description.
-- Changes are saved to your browser's `localStorage` and persist across sessions.
-
-For more details, see [`ADMIN_GUIDE.md`](ADMIN_GUIDE.md).
-
----
-
-## 🌐 Deploy to GitHub Pages
-
-This repository is pre-configured for static deployment via GitHub Pages.
-
-### Manual build
-
-```bash
-bun run build:pages
-```
-
-This outputs a fully static site to `dist-pages/` with `index.html` at the root.
-
-### Automated deployment via GitHub Actions
-
-1. Push this repository to GitHub.
-2. Go to **Settings → Pages**.
-3. Set **Source** to **GitHub Actions**.
-4. Push to the `main` branch — the included workflow (`.github/workflows/deploy.yml`) will build and deploy automatically.
-
-The app is configured with `base: "/verse/"`, so it will be available at:
-
-```
-https://ashutoshpalhare.github.io/verse/
-```
-
----
-
-## 📁 Project Structure
-
-```
-ap-verse/
-├── .github/workflows/deploy.yml   # GitHub Pages deployment
-├── pages/
-│   └── index.html                 # Static HTML shell for Pages build
-├── public/
-│   ├── images/                    # Your gallery photos go here
-│   └── favicon.ico
-├── src/
-│   ├── components/
-│   │   ├── gallery/               # PhotoCard, GalleryGrid, PhotoViewer, etc.
-│   │   ├── layout/                # SplashScreen, headers, navigation
-│   │   ├── theme/                 # ThemeProvider
-│   │   └── ui/                    # shadcn/ui components
-│   ├── lib/
-│   │   ├── image-discovery.ts     # Vite glob-based photo discovery
-│   │   └── store/
-│   │       ├── gallery-store.ts   # Zustand gallery + favorites state
-│   │       └── theme-store.ts     # Zustand theme state
-│   ├── routes/                    # TanStack Router file-based routes
-│   │   ├── index.tsx              # Gallery home
-│   │   ├── favorites.tsx          # Favorites stream
-│   │   ├── about.tsx              # Creator profile
-│   │   ├── settings.tsx           # Settings & themes
-│   │   └── __root.tsx             # Root layout
-│   ├── spa/
-│   │   └── main.tsx               # Client-only entry for static build
-│   ├── router.tsx                 # Router factory
-│   ├── start.ts                   # TanStack Start SSR entry
-│   ├── server.ts                  # Nitro server entry
-│   └── styles.css                 # Global OKLCH theme tokens
-├── vite.config.ts                 # Default TanStack Start config (SSR)
-├── vite.pages.config.ts           # Static GitHub Pages config
-├── package.json
-├── README.md
-└── ADMIN_GUIDE.md
-```
-
----
-
-## 🧰 Available Scripts
-
-| Script | Description |
-|--------|-------------|
-| `bun dev` | Start the Lovable/TanStack Start dev server |
-| `bun run build` | Build the full TanStack Start production app |
-| `bun run build:dev` | Build in development mode |
-| `bun run build:pages` | Build static site for GitHub Pages (`dist-pages/`) |
-| `bun preview` | Preview the default production build |
+| Command | Purpose |
+|---|---|
+| `bun run dev` | Generate image manifest and start local development |
+| `bun run build:pages` | Build the GitHub Pages static site and route-specific SEO HTML |
+| `bun run test:images` | Test image manifest discovery and migration cases |
+| `bun run test:seo` | Validate generated route metadata, sitemap, and robots output |
+| `bun run typecheck` | Run TypeScript without emitting files |
 | `bun run lint` | Run ESLint |
-| `bun run format` | Format code with Prettier |
+| `bun run format` | Format repository files with Prettier |
 
----
+## Repository layout
 
-## 🏗 Architecture Notes
+```text
+pages/index.html                 Static Vite entry for GitHub Pages
+public/images/                   Published gallery images
+public/robots.txt                Crawler rules
+public/sitemap.xml               Public indexable routes
+scripts/generate-image-manifest.mjs
+scripts/generate-seo-pages.mjs
+scripts/test-image-manifest.mjs
+scripts/test-seo-pages.mjs
+src/generated/image-manifest.json Generated at build/dev time; do not hand-edit
+src/lib/image-discovery.ts       Manifest-to-gallery adapter
+src/lib/store/                   Gallery, theme, and preference stores
+src/routes/                      Home, About, Favorites, and Settings
+vite.pages.config.ts             Static GitHub Pages configuration
+.github/workflows/               CI and Pages deployment workflows
+ADMIN_GUIDE.md                   Maintenance and operational guide
+```
 
-- **Local-first gallery**: Photos live in `public/images/` and are discovered at build time via `import.meta.glob`. No backend database is required for basic usage.
-- **Dual build system**:
-  - Default `vite.config.ts` powers the Lovable preview with SSR/Nitro.
-  - `vite.pages.config.ts` produces a pure static SPA for GitHub Pages.
-- **State persistence**: Favorites and metadata edits are stored in `localStorage` because local image files cannot be modified by the browser.
-- **Future-ready**: The store and discovery layer are designed to be swapped for a Supabase backend when needed.
+## Privacy, content, and license
 
----
+- This is a public static website. Repository contents and published gallery images are publicly accessible.
+- Local favorites and preferences are not uploaded by the app, but they are not synchronized between browsers/devices.
+- The MIT license in [LICENSE](LICENSE) covers the project code. It does not grant rights to reuse portrait photographs or other third-party assets; confirm image permissions before publishing.
+- Do not commit secrets, private images, or personal data to this public repository.
 
-## 🛣 Roadmap
-
-- [ ] Admin authentication for photo management
-- [ ] Backend integration (Supabase / Cloud)
-- [ ] Drag-and-drop bulk import
-- [ ] Export/import metadata
-- [ ] PWA offline support
-
----
-
-## 👤 Creator
+## Maintainer
 
 **Ashutosh Palhare**
 
-- GitHub: [@ashutoshpalhare](https://github.com/ashutoshpalhare)
-- Project: [AP VERSE](https://github.com/ashutoshpalhare/verse)
-
----
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
-<p align="center">
-  <strong>AP VERSE — AP's Visual Universe</strong><br/>
-  <em>A private cinematic portrait sanctuary.</em>
-</p>
+- GitHub: https://github.com/ashutoshpalhare
+- Repository: https://github.com/ashutoshpalhare/verse
