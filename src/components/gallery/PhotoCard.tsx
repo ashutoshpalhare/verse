@@ -60,9 +60,6 @@ export const PhotoCard = memo(({ photo, index, onClick }: PhotoCardProps) => {
               {photo.description}
             </p>
           )}
-          <span className="mt-3 text-[9px] font-medium tracking-[0.2em] text-white/70 uppercase">
-            {photo.date}
-          </span>
         </div>
       </motion.button>
 
