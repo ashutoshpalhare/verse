@@ -40,13 +40,6 @@ export const discoverLocalImages = (): Photo[] => {
       imageUrl,
       title,
       description: "Personal portrait",
-      date: new Date()
-        .toLocaleDateString("en-US", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        })
-        .toUpperCase(),
       isFavorite: false,
       createdAt: new Date().toISOString(),
     };

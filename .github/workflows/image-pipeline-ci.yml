@@ -4,27 +4,21 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - "src/**"
+      - "pages/**"
+      - "public/**"
       - "scripts/**"
+      - ".github/workflows/**"
       - "README.md"
       - "ADMIN_GUIDE.md"
       - "LICENSE"
-      - "public/robots.txt"
-      - "public/sitemap.xml"
-      - "src/routes/**"
-      - "src/lib/image-discovery.ts"
-      - "src/lib/store/gallery-store.ts"
-      - "src/types/photo.ts"
-      - "src/hooks/use-gallery-photos.ts"
-      - "src/components/gallery/PhotoCard.tsx"
-      - "src/components/gallery/PhotoViewer.tsx"
-      - "src/components/gallery/BottomNavigation.tsx"
-      - "src/components/gallery/GalleryHeader.tsx"
-      - "src/components/layout/SplashScreen.tsx"
-      - "src/styles.css"
       - "package.json"
       - "bun.lock"
+      - "bunfig.toml"
+      - "tsconfig.json"
+      - "eslint.config.js"
+      - "vite.config.ts"
       - "vite.pages.config.ts"
-      - ".github/workflows/image-pipeline-ci.yml"
 
 permissions:
   contents: read
